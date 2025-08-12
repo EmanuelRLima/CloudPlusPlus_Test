@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Cache;
 use App\Http\Controllers\Api\Auth\RegisterController;
+use App\Http\Controllers\Api\Auth\LoginController;
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
@@ -43,4 +44,6 @@ Route::prefix('v1')
     ->name('api.v1.')
     ->group(function () {
         Route::post('/register', [RegisterController::class, 'register'])->name('register');
+        Route::post('/login', [LoginController::class, 'login'])->name('login');
+        Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 });
