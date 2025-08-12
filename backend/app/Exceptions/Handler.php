@@ -2,9 +2,10 @@
 
 namespace App\Exceptions;
 
-use App\Exceptions\Auth\PhotoUploadException;
-use App\Exceptions\Auth\UserCreationException;
-use App\Exceptions\Auth\UserRegistrationException;
+use App\Exceptions\PhotoUploadException;
+use App\Exceptions\UserCreationException;
+use App\Exceptions\UserRegistrationException;
+use App\Exceptions\InvalidCredentialsException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Illuminate\Http\JsonResponse;
 use Throwable;
@@ -36,7 +37,8 @@ class Handler extends ExceptionHandler
     {
         return $exception instanceof PhotoUploadException ||
                $exception instanceof UserCreationException ||
-               $exception instanceof UserRegistrationException;
+               $exception instanceof UserRegistrationException ||
+               $exception instanceof InvalidCredentialsException;
     }
 
     private function renderCustomAuthException(Throwable $exception): JsonResponse
