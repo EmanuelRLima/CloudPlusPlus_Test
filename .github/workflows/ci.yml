@@ -27,27 +27,28 @@ jobs:
       - name: Install Laravel dependencies and setup
         run: |
           docker compose exec -T backend cp .env.ci .env
-          docker compose exec -T backend composer install --no-dev --optimize-autoloader
+          docker compose exec -T backend composer install --optimize-autoloader
           docker compose exec -T backend php artisan key:generate
           docker compose exec -T backend php artisan config:cache
 
       - name: Run Laravel migrations
         run: docker compose exec -T backend php artisan migrate --force
 
-      - name: Check Laravel commands
-        run: |
-          docker compose exec -T backend php artisan --version
-          docker compose exec -T backend php artisan list | grep test || true
-
       - name: Run backend tests (Laravel)
         run: |
-          echo "Running PHPUnit tests..."
-          docker compose exec -T backend ./vendor/bin/phpunit || \
-          docker compose exec -T backend vendor/bin/phpunit || \
-          echo "No tests found or PHPUnit not installed"
+          if docker compose exec -T backend test -f ./vendor/bin/phpunit; then
+            echo "Running PHPUnit tests..."
+            docker compose exec -T backend ./vendor/bin/phpunit
+          elif docker compose exec -T backend php artisan list | grep -q "^\s*test\s"; then
+            echo "Running tests with artisan..."
+            docker compose exec -T backend php artisan test
+          else
+            echo "WARNING: No test runner found. Please ensure PHPUnit is in composer.json"
+            exit 1
+          fi
 
       - name: Run frontend tests (Vue)
-        run: docker compose exec -T frontend npm run test
+        run: docker compose exec -T frontend npm run test -- run
 
       - name: Run frontend build (Vue)
         run: docker compose exec -T frontend npm run build
