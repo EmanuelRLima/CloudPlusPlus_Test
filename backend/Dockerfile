@@ -54,6 +54,13 @@ RUN if [ ! -f artisan ]; then \
 
 RUN if [ -f artisan ]; then \
         composer dump-autoload --optimize && \
+        if [ ! -f .env ]; then \
+            if [ -f .env.example ]; then \
+                cp .env.example .env; \
+            else \
+                echo -e "APP_NAME=Laravel\nAPP_ENV=local\nAPP_KEY=\nAPP_DEBUG=true\nAPP_URL=http://localhost\nDB_CONNECTION=pgsql" > .env; \
+            fi; \
+        fi && \
         php artisan key:generate --force; \
     fi
 
