@@ -12,7 +12,9 @@ RUN apk add --no-cache \
     icu-dev \
     oniguruma-dev \
     supervisor \
-    bash
+    bash \
+    procps \
+    && rm -rf /var/cache/apk/*
 
 RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
     && docker-php-ext-install -j$(nproc) \
@@ -22,7 +24,8 @@ RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
         mbstring \
         intl \
         bcmath \
-        opcache
+        opcache \
+        pcntl
 
 RUN apk add --no-cache --virtual .build-deps $PHPIZE_DEPS \
     && pecl install redis \
@@ -51,10 +54,17 @@ RUN if [ ! -f artisan ]; then \
 
 RUN if [ -f artisan ]; then \
         composer dump-autoload --optimize && \
+        if [ ! -f .env ]; then \
+            if [ -f .env.example ]; then \
+                cp .env.example .env; \
+            else \
+                echo -e "APP_NAME=Laravel\nAPP_ENV=local\nAPP_KEY=\nAPP_DEBUG=true\nAPP_URL=http://localhost\nDB_CONNECTION=pgsql" > .env; \
+            fi; \
+        fi && \
         php artisan key:generate --force; \
     fi
 
-RUN mkdir -p storage/logs storage/framework/cache storage/framework/sessions storage/framework/views bootstrap/cache \
+RUN mkdir -p storage/logs storage/framework/cache storage/framework/sessions storage/framework/views bootstrap/cache /var/log \
     && chown -R www-data:www-data /var/www/html \
     && chmod -R 755 storage bootstrap/cache \
     && mkdir -p /tmp

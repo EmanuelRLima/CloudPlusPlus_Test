@@ -1,14 +1,13 @@
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import vueJsx from '@vitejs/plugin-vue-jsx'
-import VueDevTools from 'vite-plugin-vue-devtools'
+/* import VueDevTools from 'vite-plugin-vue-devtools' */
 import { fileURLToPath, URL } from 'node:url'
 
 export default defineConfig({
   plugins: [
     vue(),
     vueJsx(),
-    VueDevTools(),
   ],
 
   server: {
@@ -17,14 +16,10 @@ export default defineConfig({
     hmr: {
       host: 'localhost',
       port: 5173,
-      clientPort: 5173
     },
     watch: {
       usePolling: true,
       interval: 1000
-    },
-    fs: {
-      strict: false
     }
   },
 
@@ -32,5 +27,14 @@ export default defineConfig({
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url))
     }
+  },
+
+   css: {
+    postcss: './postcss.config.js',
+  },
+
+   test: {
+    environment: 'jsdom',
+    globals: true,
   }
 })
