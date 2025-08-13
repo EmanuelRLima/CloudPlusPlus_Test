@@ -17,14 +17,10 @@ export default defineConfig({
     hmr: {
       host: 'localhost',
       port: 5173,
-      clientPort: 5173
     },
     watch: {
       usePolling: true,
       interval: 1000
-    },
-    fs: {
-      strict: false
     }
   },
 
@@ -32,5 +28,9 @@ export default defineConfig({
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url))
     }
-  }
+  },
+
+   css: {
+    postcss: './postcss.config.js',
+  },
 })
