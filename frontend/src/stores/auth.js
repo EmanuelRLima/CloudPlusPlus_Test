@@ -121,9 +121,11 @@ export const useAuthStore = defineStore('auth', () => {
     token,
     isLoading,
     isInitialized,
+    pendingMessage,
 
     isAuthenticated,
 
+    setPendingMessage,
     showPendingMessage,
     initializeAuth,
     login,
