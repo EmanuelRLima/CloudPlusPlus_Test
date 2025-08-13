@@ -17,10 +17,6 @@ api.interceptors.request.use(
       config.headers.Authorization = `Bearer ${token}`
     }
 
-    if (config.showLoading !== false) {
-      // You can dispatch loading state here if needed
-    }
-
     return config
   },
   (error) => {

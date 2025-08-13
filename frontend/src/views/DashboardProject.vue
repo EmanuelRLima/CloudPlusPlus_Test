@@ -137,7 +137,6 @@
         </div>
       </div>
 
-      <!-- Recent Projects -->
       <div class="card">
         <div class="card-header">
           <div class="flex items-center justify-between">
