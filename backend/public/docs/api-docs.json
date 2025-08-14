@@ -1,0 +1,262 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Laravel REST API",
+        "description": "Laravel REST API example",
+        "contact": {
+            "email": "support@example.com"
+        },
+        "license": {
+            "name": "Apache 2.0",
+            "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+        },
+        "version": "1.0.0"
+    },
+    "paths": {
+        "/api/v1/register": {
+            "post": {
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "User registration",
+                "description": "Register a new user",
+                "operationId": "425a3ed822413236e9880c93be42f02b",
+                "requestBody": {
+                    "description": "Register",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "name",
+                                    "username",
+                                    "email",
+                                    "password",
+                                    "password_confirmation"
+                                ],
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "example": "Example User"
+                                    },
+                                    "username": {
+                                        "type": "string",
+                                        "example": "Example_Example"
+                                    },
+                                    "email": {
+                                        "type": "string",
+                                        "format": "email",
+                                        "example": "demoTeste@example.com"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "example": "123456789"
+                                    },
+                                    "password_confirmation": {
+                                        "type": "string",
+                                        "example": "123456789"
+                                    },
+                                    "photo": {
+                                        "type": "file",
+                                        "format": "binary",
+                                        "description": "User photo"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Registration successful",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "User registered successfully"
+                                        },
+                                        "user": {
+                                            "description": "User information",
+                                            "type": "object",
+                                            "example": {
+                                                "name": "Example User",
+                                                "username": "Example_Example",
+                                                "email": "demoTeste@example.com",
+                                                "photo": "users/photos/313b01b4-d216-432f-803e-5691e18f4f55.png",
+                                                "updated_at": "2025-08-14T19:43:58.000000Z",
+                                                "created_at": "2025-08-14T19:43:58.000000Z",
+                                                "id": 22
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "The given data was invalid"
+                    }
+                }
+            }
+        },
+        "/api/v1/login": {
+            "post": {
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "User login",
+                "description": "Authenticate user and return access token",
+                "operationId": "425a3ed822413236e9880c93be42f02b",
+                "requestBody": {
+                    "description": "Login credentials",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "email",
+                                    "password"
+                                ],
+                                "properties": {
+                                    "login": {
+                                        "type": "string",
+                                        "format": "email",
+                                        "example": "demo@example.com"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "example": "123456789"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Login successful",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Login successful"
+                                        },
+                                        "user": {
+                                            "description": "User information",
+                                            "type": "object",
+                                            "example": {
+                                                "id": 1,
+                                                "name": "Example",
+                                                "username": "Example",
+                                                "photo": "/storage/users/photos/313b01b4-d216-432f-803e-5691e18f4f55.png",
+                                                "created_at": "2025-08-14T19:43:58.000000Z"
+                                            }
+                                        },
+                                        "token": {
+                                            "description": "Authentication token",
+                                            "type": "string",
+                                            "example": "1|abc123def456..."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Invalid credentials",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Credenciais inválidas"
+                                        },
+                                        "error_type": {
+                                            "type": "string",
+                                            "example": "InvalidCredentialsException"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error"
+                    }
+                }
+            }
+        },
+       "/api/v1/logout": {
+    "post": {
+        "tags": [
+            "Authentication"
+        ],
+        "summary": "User logout",
+        "description": "Log out the authenticated user",
+        "operationId": "425a3ed822413236e9880c93be42f02b",
+        "security": [
+            {
+                "bearerAuth": []
+            }
+        ],
+        "responses": {
+            "200": {
+                "description": "Logout successful",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "message": {
+                                    "type": "string",
+                                    "example": "Logout successful"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "401": {
+                "description": "Invalid credentials",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "message": {
+                                    "type": "string",
+                                    "example": "Unauthorized"
+                                },
+                                "error_type": {
+                                    "type": "string",
+                                    "example": "Unauthorized"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "500": {
+                "description": "Internal server error"
+            }
+        }
+    }
+}
+    },
+    "tags": [
+        {
+            "name": "Authentication",
+            "description": "Authentication"
+        }
+    ]
+}
