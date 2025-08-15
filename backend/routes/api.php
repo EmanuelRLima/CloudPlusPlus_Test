@@ -6,6 +6,8 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Cache;
 use App\Http\Controllers\Api\Auth\RegisterController;
 use App\Http\Controllers\Api\Auth\LoginController;
+use App\Http\Controllers\Api\ProjectController;
+use App\Http\Controllers\Api\TaskController;
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
@@ -45,5 +47,10 @@ Route::prefix('v1')
     ->group(function () {
         Route::post('/register', [RegisterController::class, 'register'])->name('register');
         Route::post('/login', [LoginController::class, 'login'])->name('login');
-        Route::post('/logout', [LoginController::class, 'logout'])->name('logout')->middleware('auth:sanctum');
+
+        Route::middleware('auth:sanctum')->group(function () {
+            Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
+            Route::apiResource('projects', ProjectController::class);
+            Route::apiResource('projects.tasks', TaskController::class)->shallow();
+        });
 });

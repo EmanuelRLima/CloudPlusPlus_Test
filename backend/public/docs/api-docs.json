@@ -197,66 +197,571 @@
             }
         },
        "/api/v1/logout": {
-    "post": {
-        "tags": [
-            "Authentication"
-        ],
-        "summary": "User logout",
-        "description": "Log out the authenticated user",
-        "operationId": "425a3ed822413236e9880c93be42f02b",
-        "security": [
-            {
-                "bearerAuth": []
+        "post": {
+            "tags": [
+                "Authentication"
+            ],
+            "summary": "User logout",
+            "description": "Log out the authenticated user",
+            "operationId": "425a3ed822413236e9880c93be42f02b",
+            "security": [
+                {
+                    "bearerAuth": []
+                }
+            ],
+            "responses": {
+                "200": {
+                    "description": "Logout successful",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "message": {
+                                        "type": "string",
+                                        "example": "Logout successful"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "401": {
+                    "description": "Invalid credentials",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "message": {
+                                        "type": "string",
+                                        "example": "Unauthorized"
+                                    },
+                                    "error_type": {
+                                        "type": "string",
+                                        "example": "Unauthorized"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "500": {
+                    "description": "Internal server error"
+                }
             }
-        ],
-        "responses": {
-            "200": {
-                "description": "Logout successful",
-                "content": {
-                    "application/json": {
-                        "schema": {
-                            "type": "object",
-                            "properties": {
-                                "message": {
-                                    "type": "string",
-                                    "example": "Logout successful"
-                                }
-                            }
-                        }
-                    }
-                }
-            },
-            "401": {
-                "description": "Invalid credentials",
-                "content": {
-                    "application/json": {
-                        "schema": {
-                            "type": "object",
-                            "properties": {
-                                "message": {
-                                    "type": "string",
-                                    "example": "Unauthorized"
+        }
+        },
+        "/api/v1/projects": {
+            "get": {
+                "tags": [
+                    "Project"
+                ],
+                "summary": "Get project",
+                "description": "Get project",
+                "operationId": "425a3ed822413236e9880c93be42f02b",
+                "requestBody": {
+                    "description": "Project",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "search"
+                                ],
+                                "properties": {
+                                    "search": {
+                                        "type": "string",
+                                        "example": "Teste"
+                                    }
                                 },
-                                "error_type": {
-                                    "type": "string",
-                                    "example": "Unauthorized"
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Get project",
+                        "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "data": {
+                                        "type": "object",
+                                        "example": {
+                                            "id": 17,
+                                            "name": "Teste Project",
+                                            "description": "Teste teste",
+                                            "status": "inactive",
+                                            "start_date": "2025-08-14",
+                                            "end_date": "2025-08-16",
+                                            "value": "20.00",
+                                            "owner": {
+                                                "id": 1,
+                                                "name": "Admin User",
+                                                "email": "admin@example.com"
+                                            },
+                                            "tasks": []
+                                        }
+                                    },
+                                    "links": {
+                                        "type": "object",
+                                        "example": {
+                                            "first": "http://localhost/api/v1/projects?page=1",
+                                            "last": "http://localhost/api/v1/projects?page=1",
+                                            "prev": null,
+                                            "next": null
+                                        }
+                                    },
+                                    "meta": {
+                                        "type": "object",
+                                        "example": {
+                                            "current_page": 1,
+                                            "from": 1,
+                                            "last_page": 1,
+                                            "links": [
+                                            {
+                                                "url": null,
+                                                "label": "&laquo; Previous",
+                                                "active": false
+                                            },
+                                            {
+                                                "url": "http://localhost/api/v1/projects?page=1",
+                                                "label": "1",
+                                                "active": true
+                                            },
+                                            {
+                                                "url": null,
+                                                "label": "Next &raquo;",
+                                                "active": false
+                                            }
+                                        ],
+                                        "path": "http://localhost/api/v1/projects",
+                                        "per_page": 10,
+                                        "to": 1,
+                                        "total": 1
+                                        }
+                                    }
                                 }
                             }
                         }
                     }
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
                 }
             },
-            "500": {
-                "description": "Internal server error"
+            "post": {
+                "tags": [
+                    "Project"
+                ],
+                "summary": "Post project",
+                "description": "Post project",
+                "operationId": "425a3ed822413236e9880c93be42f02b",
+                "requestBody": {
+                    "description": "Project",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "search"
+                                ],
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "example": "Teste Project"
+                                    },
+                                    "description": {
+                                        "type": "string",
+                                        "example": "Teste teste"
+                                    },
+                                    "status": {
+                                        "type": "enum",
+                                        "example": "active"
+                                    },
+                                    "start_date": {
+                                        "type": "date",
+                                        "example": "2025-08-14 21:34:36.000"
+                                    },
+                                    "end_date": {
+                                        "type": "date",
+                                        "example": "2025-08-16 21:34:36.000"
+                                    },
+                                    "value": {
+                                        "type": "number",
+                                        "example": 10
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Post project",
+                        "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "data": {
+                                        "type": "object",
+                                        "example": {
+                                            "id": 17,
+                                            "name": "Teste Project",
+                                            "description": "Teste teste",
+                                            "status": "active",
+                                            "start_date": "2025-08-14 21:34:36.000",
+                                            "end_date": "2025-08-16 21:34:36.000",
+                                            "value": 10,
+                                            "owner": {
+                                                "id": 1,
+                                                "name": "Admin User",
+                                                "email": "admin@example.com"
+                                            },
+                                            "tasks": []
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
+        "/api/v1/projects/{id}": {
+            "put": {
+                "tags": [
+                    "Project"
+                ],
+                "summary": "Put project",
+                "description": "Update project",
+                "operationId": "425a3ed822413236e9880c93be42f02b",
+                "requestBody": {
+                    "description": "Project",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "example": "Teste Project"
+                                    },
+                                    "description": {
+                                        "type": "string",
+                                        "example": "Teste teste"
+                                    },
+                                    "status": {
+                                        "type": "enum",
+                                        "example": "active"
+                                    },
+                                    "start_date": {
+                                        "type": "date",
+                                        "example": "2025-08-14 21:34:36.000"
+                                    },
+                                    "end_date": {
+                                        "type": "date",
+                                        "example": "2025-08-16 21:34:36.000"
+                                    },
+                                    "value": {
+                                        "type": "number",
+                                        "example": 10
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Put project",
+                        "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "data": {
+                                        "type": "object",
+                                        "example": {
+                                            "id": 17,
+                                            "name": "Teste Project",
+                                            "description": "Teste teste",
+                                            "status": "active",
+                                            "start_date": "2025-08-14 21:34:36.000",
+                                            "end_date": "2025-08-16 21:34:36.000",
+                                            "value": 10,
+                                            "owner": {
+                                                "id": 1,
+                                                "name": "Admin User",
+                                                "email": "admin@example.com"
+                                            },
+                                            "tasks": []
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Project"
+                ],
+                "summary": "Delete project",
+                "description": "Delete project",
+                "operationId": "425a3ed822413236e9880c93be42f02b",
+                "responses": {
+                    "200": {
+                        "description": "Delete project",
+                        "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "message": {
+                                        "type": "string",
+                                        "example": "Project deleted successfully"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
+         "/api/v1/projects/{id}/task": {
+            "post": {
+                "tags": [
+                    "Task"
+                ],
+                "summary": "Create task",
+                "description": "Create a new task for a project",
+                "operationId": "425a3ed822413236e9880c93be42f02b",
+                "requestBody": {
+                    "description": "Task create",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "example": "Teste Project"
+                                    },
+                                    "description": {
+                                        "type": "string",
+                                        "example": "Teste teste"
+                                    },
+                                    "status": {
+                                        "type": "enum",
+                                        "example": "active"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Task created",
+                        "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "data": {
+                                        "type": "object",
+                                        "example": {
+                                            "id": 26,
+                                            "name": "Fazer teste",
+                                            "description": "um teste",
+                                            "status": "active",
+                                            "creator": {
+                                                "id": 1,
+                                                "name": "Admin User"
+                                            },
+                                            "project_id": 17,
+                                            "created_at": "2025-08-14T22:24:48.000000Z",
+                                            "updated_at": "2025-08-14T22:24:48.000000Z"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
+         "/api/v1/tasks/{id}": {
+            "get": {
+                "tags": [
+                    "Task"
+                ],
+                "summary": "Get task",
+                "description": "Get task",
+                "operationId": "425a3ed822413236e9880c93be42f02b",
+                "requestBody": {
+                    "description": "Task",
+                    "required": false
+                },
+                "responses": {
+                    "200": {
+                        "description": "Get task",
+                        "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "data": {
+                                        "type": "object",
+                                        "example": {
+                                           "id": 2,
+                                            "name": "Voluptatum molestiae non cupiditate.",
+                                            "description": "Incidunt culpa adipisci eos quia. Dolor et atque exercitationem quam est sit qui. Vel consequatur et qui. Iure recusandae nihil vitae modi et porro autem.",
+                                            "status": "active",
+                                            "creator": {
+                                                "id": 1,
+                                                "name": "Admin User"
+                                            },
+                                            "project_id": 1,
+                                            "created_at": "2025-08-14T21:34:36.000000Z",
+                                            "updated_at": "2025-08-14T21:34:36.000000Z"
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+            },
+            "put": {
+                "tags": [
+                    "Task"
+                ],
+                "summary": "Update task",
+                "description": "Update an existing task",
+                "operationId": "425a3ed822413236e9880c93be42f02b",
+                "requestBody": {
+                    "description": "Task update",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "example": "Teste Project"
+                                    },
+                                    "description": {
+                                        "type": "string",
+                                        "example": "Teste teste"
+                                    },
+                                    "status": {
+                                        "type": "enum",
+                                        "example": "active"
+                                    },
+                                    "project_id": {
+                                        "type": "integer",
+                                        "example": 17
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Task Update",
+                        "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "data": {
+                                        "type": "object",
+                                        "example": {
+                                            "id": 26,
+                                            "name": "Fazer teste",
+                                            "description": "um teste",
+                                            "status": "active",
+                                            "creator": {
+                                                "id": 1,
+                                                "name": "Admin User"
+                                            },
+                                            "project_id": 17,
+                                            "created_at": "2025-08-14T22:24:48.000000Z",
+                                            "updated_at": "2025-08-14T22:24:48.000000Z"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            },
+             "delete": {
+                "tags": [
+                    "Task"
+                ],
+                "summary": "Delete Task",
+                "description": "Delete Task",
+                "operationId": "425a3ed822413236e9880c93be42f02b",
+                "responses": {
+                    "200": {
+                        "description": "Delete Task",
+                        "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "message": {
+                                        "type": "string",
+                                        "example": "Task deleted successfully"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
             }
         }
     }
-}
-    },
-    "tags": [
-        {
-            "name": "Authentication",
-            "description": "Authentication"
-        }
-    ]
-}
+    }
