@@ -46,4 +46,14 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    public function projects()
+    {
+        return $this->hasMany(\App\Models\Project::class, 'user_id');
+    }
+
+    public function tasks()
+    {
+        return $this->hasManyThrough(\App\Models\Task::class, \App\Models\Project::class);
+    }
 }
