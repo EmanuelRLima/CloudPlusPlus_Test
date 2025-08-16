@@ -18,14 +18,14 @@ class ProjectResource extends JsonResource
             'value' => $this->value,
             'owner' => [
                 'id' => $this->owner?->id,
-                'name' => $this->owner?->name,
+                'username' => $this->owner?->username,
                 'email' => $this->owner?->email,
             ],
            'tasks' => $this->whenLoaded('tasks', function () {
                 return $this->tasks->map(function($task) {
                     return [
                         'id' => $task->id,
-                        'name' => $task->name,
+                        'username' => $task->username,
                         'status' => $task->status,
                     ];
                 });

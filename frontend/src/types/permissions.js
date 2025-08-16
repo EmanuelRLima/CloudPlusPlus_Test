@@ -1,0 +1,54 @@
+//TODO: Permission by "Role"
+/*
+export const PERMISSIONS = {
+
+  PROJECT_VIEW: 'view:project',
+  PROJECT_CREATE: 'create:project',
+  PROJECT_EDIT: 'edit:project',
+  PROJECT_DELETE: 'delete:project',
+
+  TASK_VIEW: 'view:task',
+  TASK_CREATE: 'create:task',
+  TASK_EDIT: 'edit:task',
+
+  ANALYTICS_VIEW: 'view:analytics',
+  REPORTS_EXPORT: 'export:reports',
+
+  USER_MANAGE: 'manage:users',
+  TEAM_MANAGE: 'manage:team'
+}
+
+export const ROLES = {
+  ADMIN: 'admin',
+  MANAGER: 'manager',
+  MEMBER: 'member',
+  VIEWER: 'viewer'
+}
+
+export const ROLE_PERMISSIONS = {
+  [ROLES.ADMIN]: Object.values(PERMISSIONS),
+  [ROLES.MANAGER]: [
+    PERMISSIONS.PROJECT_VIEW,
+    PERMISSIONS.PROJECT_CREATE,
+    PERMISSIONS.PROJECT_EDIT,
+    PERMISSIONS.PROJECT_DELETE,
+    PERMISSIONS.TASK_VIEW,
+    PERMISSIONS.TASK_CREATE,
+    PERMISSIONS.TASK_EDIT,
+    PERMISSIONS.TASK_DELETE,
+    PERMISSIONS.TASK_ASSIGN,
+    PERMISSIONS.ANALYTICS_VIEW,
+    PERMISSIONS.TEAM_MANAGE
+  ],
+  [ROLES.MEMBER]: [
+    PERMISSIONS.PROJECT_VIEW,
+    PERMISSIONS.TASK_VIEW,
+    PERMISSIONS.TASK_CREATE,
+    PERMISSIONS.TASK_EDIT
+  ],
+  [ROLES.VIEWER]: [
+    PERMISSIONS.PROJECT_VIEW,
+    PERMISSIONS.TASK_VIEW
+  ]
+}
+ */

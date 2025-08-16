@@ -42,7 +42,7 @@ Route::get('/health', function () {
 });
 
 Route::prefix('v1')
-    ->middleware('throttle:10,1')
+    ->middleware('throttle:20,1')
     ->name('api.v1.')
     ->group(function () {
         Route::post('/register', [RegisterController::class, 'register'])->name('register');

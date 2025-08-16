@@ -13,17 +13,22 @@ export const useTasksStore = defineStore('tasks', () => {
     total: 0
   })
 
+  const filters = ref({
+    search: '',
+    status: '',
+    sort_by: 'due_date',
+    sort_direction: 'desc'
+  })
+
   const totalTasks = computed(() => pagination.value.total)
   const hasTasks = computed(() => tasks.value.length > 0)
-  const pendingTasks = computed(() =>
-    tasks.value.filter(task => task.status === 'Pending')
-  )
-  const completedTasks = computed(() =>
-    tasks.value.filter(task => task.status === 'Completed')
-  )
-  const inactiveTasks = computed(() =>
-    tasks.value.filter(task => task.status === 'Inactive')
-  )
+  const pendingTasks = computed(() => pagination.value.total_pending)
+  const completedTasks = computed(() => pagination.value.total_completed)
+  const inactiveTasks = computed(() => pagination.value.total_inactive)
+
+  function updateFilters(newFilters) {
+    filters.value = { ...filters.value, ...newFilters }
+  }
 
   async function fetchTasks(projectId, page = 1) {
     isLoading.value = true
@@ -31,14 +36,21 @@ export const useTasksStore = defineStore('tasks', () => {
     try {
       const params = {
         page,
-        per_page: pagination.value.per_page
+        per_page: pagination.value.per_page,
+        ...filters.value
       }
 
-      const response = await api.get(`/projects/${projectId}/tasks`, { params })
+      Object.keys(params).forEach(key => {
+        if (params[key] === '' || params[key] === null) {
+          delete params[key]
+        }
+      })
+
+      const response = await api.get(`v1/projects/${projectId}/tasks`, { params })
       const { data, ...paginationData } = response.data
 
       tasks.value = data
-      pagination.value = paginationData
+      pagination.value = paginationData.meta
 
       return { success: true }
     } catch (error) {
@@ -54,7 +66,7 @@ export const useTasksStore = defineStore('tasks', () => {
     isLoading.value = true
 
     try {
-      const response = await api.get(`/tasks/${id}`)
+      const response = await api.get(`v1/tasks/${id}`)
       currentTask.value = response.data.data
 
       return { success: true }
@@ -71,7 +83,7 @@ export const useTasksStore = defineStore('tasks', () => {
     isLoading.value = true
 
     try {
-      const response = await api.post(`/projects/${projectId}/tasks`, taskData)
+      const response = await api.post(`v1/projects/${projectId}/tasks`, taskData)
       const newTask = response.data.data
 
       if (pagination.value.current_page === 1) {
@@ -103,7 +115,7 @@ export const useTasksStore = defineStore('tasks', () => {
     isLoading.value = true
 
     try {
-      const response = await api.put(`/tasks/${id}`, taskData)
+      const response = await api.put(`v1/tasks/${id}`, taskData)
       const updatedTask = response.data.data
 
       const index = tasks.value.findIndex(t => t.id === id)
@@ -134,7 +146,7 @@ export const useTasksStore = defineStore('tasks', () => {
     isLoading.value = true
 
     try {
-      await api.delete(`/tasks/${id}`)
+      await api.delete(`v1/tasks/${id}`)
 
       tasks.value = tasks.value.filter(t => t.id !== id)
 
@@ -159,7 +171,7 @@ export const useTasksStore = defineStore('tasks', () => {
     const task = tasks.value.find(t => t.id === id)
     if (!task) return { success: false, error: 'Task not found' }
 
-    const newStatus = task.status === 'Completed' ? 'Pending' : 'Completed'
+    const newStatus = task.status === 'completed' ? 'pending' : 'completed'
 
     return await updateTask(id, { status: newStatus })
   }
@@ -194,6 +206,7 @@ export const useTasksStore = defineStore('tasks', () => {
     completedTasks,
     inactiveTasks,
 
+    updateFilters,
     fetchTasks,
     fetchTask,
     createTask,

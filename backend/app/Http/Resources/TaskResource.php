@@ -10,7 +10,7 @@ class TaskResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'name' => $this->name,
+            'title' => $this->title,
             'description' => $this->description,
             'status' => $this->status,
             'creator' => $this->whenLoaded('creator', [
@@ -18,6 +18,7 @@ class TaskResource extends JsonResource
                 'name' => $this->creator?->name,
             ]),
             'project_id' => $this->project_id,
+            'due_date' => $this->due_date,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
         ];

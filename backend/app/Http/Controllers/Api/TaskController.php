@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\TaskRequest;
+use App\Http\Requests\UpdatedTaskRequest;
 use App\Http\Resources\TaskResource;
 use App\Models\Project;
 use App\Models\Task;
@@ -18,20 +19,32 @@ class TaskController extends Controller
 
     public function index(Project $project, Request $request)
     {
-        $tasks = $project->tasks()->with('creator');
+        $query = $project->tasks()->with('creator');
 
-        if ($status = $request->get('status')) {
-            $tasks->where('status', $status);
-        }
+        $query->when($request->filled('search'), function ($query) use ($request) {
+            return $query->where('title', 'like', "%{$request->search}%");
+        })
+        ->when($request->filled('status'), function ($query) use ($request) {
+            return $query->where('status', $request->status);
+        })
+        ->when($request->filled('sort_by'), function ($query) use ($request) {
+            $direction = $request->get('sort_direction', 'asc');
+            return $query->orderBy($request->sort_by, $direction);
+        });
 
-        if ($sort = $request->get('sort')) {
-            $direction = $request->get('direction', 'asc');
-            $tasks->orderBy($sort, $direction);
-        }
+        $totalPending = $project->tasks()->where('status', 'pending')->count();
+        $totalCompleted = $project->tasks()->where('status', 'completed')->count();
+        $totalInactive = $project->tasks()->where('status', 'inactive')->count();
 
         $pageSize = $request->get('page_size', 10);
 
-        return TaskResource::collection($tasks->paginate($pageSize));
+        return TaskResource::collection($query->paginate($pageSize))->additional([
+            'meta' => [
+                'total_pending' => $totalPending,
+                'total_completed' => $totalCompleted,
+                'total_inactive' => $totalInactive,
+            ],
+        ]);
     }
 
     public function store(TaskRequest $request, Project $project)
@@ -39,10 +52,11 @@ class TaskController extends Controller
         $this->authorize('update', $project);
 
         $task = $project->tasks()->create([
-            'name' => $request->name,
+            'title' => $request->title,
             'description' => $request->description,
-            'status' => $request->status ?? 'active',
+            'status' => $request->status ?? 'pending',
             'user_id' => auth()->id(),
+            'due_date' => $request->due_date,
         ]);
 
         return new TaskResource($task);
@@ -53,7 +67,7 @@ class TaskController extends Controller
         return new TaskResource($task->load('creator'));
     }
 
-    public function update(TaskRequest $request, Task $task)
+    public function update(UpdatedTaskRequest $request, Task $task)
     {
         $task->update($request->validated());
 
