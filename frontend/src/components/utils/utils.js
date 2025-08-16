@@ -5,14 +5,6 @@ export function formatCurrency(value) {
   }).format(value)
 }
 
-export function formatDate(date) {
-  return new Date(date).toLocaleDateString('en-US', {
-    month: 'short',
-    day: 'numeric',
-    year: 'numeric'
-  })
-}
-
 export const dateUtils = {
   calculateDuration(startDate, endDate) {
     const start = new Date(startDate)
@@ -32,16 +24,6 @@ export const dateUtils = {
       const months = Math.floor(remainingDays / 30)
       return `${years} years, ${months} months`
     }
-  },
-
-  formatDateTime(dateString) {
-    return new Date(dateString).toLocaleDateString('en-US', {
-      month: 'short',
-      day: 'numeric',
-      year: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit'
-    })
   },
 
   getTodayISOString() {
@@ -64,13 +46,3 @@ export function isTaskOverdue(dueDate) {
   return new Date(dueDate) < new Date()
 }
 
-
-export function formatDateTime(dateString) {
-  return new Date(dateString).toLocaleDateString('en-US', {
-    month: 'short',
-    day: 'numeric',
-    year: 'numeric',
-    hour: '2-digit',
-    minute: '2-digit'
-  })
-}

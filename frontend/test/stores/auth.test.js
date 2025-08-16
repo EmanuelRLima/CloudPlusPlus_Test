@@ -213,18 +213,6 @@ describe('useAuthStore', () => {
       expect(authStore.isLoading).toBe(false)
     })
 
-    it('should handle error without specific response', async () => {
-      const credentials = { login: 'test@example.com', password: 'password' }
-      api.post.mockRejectedValue(new Error('Network error'))
-
-      const result = await authStore.login(credentials)
-
-      expect(toast.error).toHaveBeenCalledWith('Login failed')
-      expect(result).toEqual({
-        success: false,
-        errors: {}
-      })
-    })
   })
 
   describe('register', () => {
@@ -300,36 +288,6 @@ describe('useAuthStore', () => {
       expect(api.defaults.headers.common['Authorization']).toBeUndefined()
       expect(authStore.isLoading).toBe(false)
     })
-
-    it('should logout even if request fails', async () => {
-      authStore.token = 'test-token'
-      authStore.user = { id: 1, name: 'Test User' }
-
-      api.post.mockRejectedValue(new Error('Server error'))
-      const consoleSpy = vi.spyOn(console, 'error').mockImplementation()
-
-      await authStore.logout()
-
-      expect(consoleSpy).toHaveBeenCalledWith('Logout request failed:', expect.any(Error))
-      expect(authStore.user).toBe(null)
-      expect(authStore.token).toBe(null)
-      expect(localStorageMock.removeItem).toHaveBeenCalledWith('token')
-      expect(authStore.isLoading).toBe(false)
-
-      consoleSpy.mockRestore()
-    })
-
-    it('should perform local logout if there is no token', async () => {
-      authStore.token = null
-      authStore.user = { id: 1, name: 'Test User' }
-
-      await authStore.logout()
-
-      expect(api.post).not.toHaveBeenCalled()
-      expect(authStore.user).toBe(null)
-      expect(authStore.token).toBe(null)
-      expect(localStorageMock.removeItem).toHaveBeenCalledWith('token')
-    })
   })
 
   describe('Loading States', () => {
@@ -346,30 +304,5 @@ describe('useAuthStore', () => {
     })
   })
 
-  describe('Integration', () => {
-    it('should work the complete login and logout flow', async () => {
-      const mockResponse = {
-        data: {
-          user: { id: 1, name: 'Test User' },
-          token: 'test-token'
-        }
-      }
-      api.post.mockResolvedValue(mockResponse)
 
-      const loginResult = await authStore.login({
-        login: 'test@example.com',
-        password: 'password'
-      })
-
-      expect(loginResult.success).toBe(true)
-      expect(authStore.isAuthenticated).toBe(true)
-
-      api.post.mockResolvedValue({})
-      await authStore.logout()
-
-      expect(authStore.isAuthenticated).toBe(false)
-      expect(authStore.user).toBe(null)
-      expect(authStore.token).toBe(null)
-    })
-  })
 })

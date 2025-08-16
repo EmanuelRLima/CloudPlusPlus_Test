@@ -397,6 +397,9 @@ import { useProjectsStore } from '@/stores/projects'
 import { useTasksStore } from '@/stores/tasks'
 import { toast } from 'vue3-toastify'
 import AppLayout from '@/components/layout/AppLayout.vue'
+import { useFormatters } from '@/composables/useFormatters.js'
+
+const { formatDate } = useFormatters()
 /* import PhotoUpload from '@/components/ui/PhotoUpload.vue' */
 import { Dialog, DialogPanel, DialogTitle, TransitionChild, TransitionRoot } from '@headlessui/vue'
 import {
@@ -528,12 +531,4 @@ async function deleteAccount() {
   }
 }
 
-function formatDate(date) {
-  if (!date) return 'N/A'
-  return new Date(date).toLocaleDateString('en-US', {
-    month: 'short',
-    day: 'numeric',
-    year: 'numeric'
-  })
-}
 </script>

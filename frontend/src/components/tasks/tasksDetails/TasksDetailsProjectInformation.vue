@@ -41,6 +41,9 @@
 <script setup>
 import { FolderIcon } from '@heroicons/vue/24/outline'
 import StatusBadge from '@/components/common/StatusBadge.vue'
+import { useFormatters } from '@/composables/useFormatters.js'
+
+const { formatDate } = useFormatters()
 
 defineProps({
   project: {
@@ -49,11 +52,4 @@ defineProps({
   }
 })
 
-function formatDate(date) {
-  return new Date(date).toLocaleDateString('en-US', {
-    month: 'short',
-    day: 'numeric',
-    year: 'numeric'
-  })
-}
 </script>
