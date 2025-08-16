@@ -38,7 +38,7 @@ export const useAuthStore = defineStore('auth', () => {
         user.value = response.data
       }
     } catch (error) {
-      console.error('Auth initialization failed:', error)
+      toast.error(error)
       await logout()
     } finally {
       isLoading.value = false
@@ -103,7 +103,7 @@ export const useAuthStore = defineStore('auth', () => {
         await api.post('/v1/logout')
       }
     } catch (error) {
-      console.error('Logout request failed:', error)
+      toast.error(error)
     } finally {
       user.value = null
       token.value = null

@@ -21,12 +21,8 @@ export const useProjectsStore = defineStore('projects', () => {
 
   const totalProjects = computed(() => pagination.value.total)
   const hasProjects = computed(() => projects.value.length > 0)
-  const activeProjects = computed(() =>
-    projects.value.filter(project => project.status === 'Active')
-  )
-  const inactiveProjects = computed(() =>
-    projects.value.filter(project => project.status === 'Inactive')
-  )
+  const activeProjects = computed(() => pagination.value.total_active)
+  const inactiveProjects = computed(() => pagination.value.total_inactive)
 
   async function fetchProjects(page = 1) {
     isLoading.value = true
@@ -44,11 +40,10 @@ export const useProjectsStore = defineStore('projects', () => {
         }
       })
 
-      const response = await api.get('/projects', { params })
+      const response = await api.get('v1/projects', { params })
       const { data, ...paginationData } = response.data
-
       projects.value = data
-      pagination.value = paginationData
+      pagination.value = paginationData.meta
 
       return { success: true }
     } catch (error) {
@@ -64,7 +59,7 @@ export const useProjectsStore = defineStore('projects', () => {
     isLoading.value = true
 
     try {
-      const response = await api.get(`/projects/${id}`)
+      const response = await api.get(`v1/projects/${id}`)
       currentProject.value = response.data.data
 
       return { success: true }
@@ -81,7 +76,7 @@ export const useProjectsStore = defineStore('projects', () => {
     isLoading.value = true
 
     try {
-      const response = await api.post('/projects', projectData)
+      const response = await api.post('v1/projects', projectData)
       const newProject = response.data.data
 
       if (pagination.value.current_page === 1) {
@@ -113,7 +108,7 @@ export const useProjectsStore = defineStore('projects', () => {
     isLoading.value = true
 
     try {
-      const response = await api.put(`/projects/${id}`, projectData)
+      const response = await api.put(`v1/projects/${id}`, projectData)
       const updatedProject = response.data.data
 
       const index = projects.value.findIndex(p => p.id === id)
@@ -144,7 +139,7 @@ export const useProjectsStore = defineStore('projects', () => {
     isLoading.value = true
 
     try {
-      await api.delete(`/projects/${id}`)
+      await api.delete(`v1/projects/${id}`)
 
       projects.value = projects.value.filter(p => p.id !== id)
 

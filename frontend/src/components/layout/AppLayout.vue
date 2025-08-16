@@ -124,11 +124,11 @@
               <div class="flex items-center gap-x-4 px-6 py-3 text-sm font-semibold leading-6 text-gray-900 hover:bg-gray-50">
                 <div class="h-8 w-8 rounded-full bg-gray-200 flex items-center justify-center">
                   <span class="text-sm font-medium text-gray-600">
-                    {{ authStore.user?.name?.charAt(0).toUpperCase() }}
+                    {{ authStore.user?.username?.charAt(0).toUpperCase() }}
                   </span>
                 </div>
                 <span class="sr-only">Your profile</span>
-                <span aria-hidden="true">{{ authStore.user?.name }}</span>
+                <span aria-hidden="true">{{ authStore.user?.username }}</span>
               </div>
             </li>
           </ul>
@@ -161,12 +161,12 @@
                 <span class="sr-only">Open user menu</span>
                 <div class="h-8 w-8 rounded-full bg-gray-200 flex items-center justify-center">
                   <span class="text-sm font-medium text-gray-600">
-                    {{ authStore.user?.name?.charAt(0).toUpperCase() }}
+                    {{ authStore.user?.username?.charAt(0).toUpperCase() }}
                   </span>
                 </div>
                 <span class="hidden lg:flex lg:items-center">
                   <span class="ml-4 text-sm font-semibold leading-6 text-gray-900" aria-hidden="true">
-                    {{ authStore.user?.name }}
+                    {{ authStore.user?.username }}
                   </span>
                   <ChevronDownIcon class="ml-2 h-5 w-5 text-gray-400" aria-hidden="true" />
                 </span>

@@ -12,9 +12,10 @@ class TaskFactory extends Factory
     public function definition(): array
     {
         return [
-            'name' => $this->faker->sentence(4),
+            'title' => $this->faker->sentence(4),
             'description' => $this->faker->paragraph,
-            'status' => $this->faker->randomElement(['active', 'inactive']),
+            'status' => $this->faker->randomElement(['pending', 'completed', 'inactive']),
+            'due_date' => $this->faker->date(),
         ];
     }
 }

@@ -14,19 +14,23 @@ class TaskRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'required|string|max:255',
+            'title' => 'required|string|max:255',
             'description' => 'nullable|string',
-            'status' => 'nullable|in:active,inactive',
+            'status' => 'nullable|in:pending,completed,inactive',
             'project_id' => 'sometimes|exists:projects,id',
             'user_id' => 'sometimes|exists:users,id',
+            'due_date' => 'required|date|after_or_equal:today',
         ];
     }
 
     public function messages(): array
     {
         return [
-            'name.required' => 'task name is required.',
-            'status.in' => 'Status must be "active" or "inactive".',
+            'title.required' => 'task title is required.',
+            'status.in' => 'Status must be "Pending", "Completed", or "Inactive".',
+            'due_date.required' => 'Due date is required.',
+            'due_date.date' => 'Due date must be a valid date.',
+            'due_date.after_or_equal' => 'Due date must be today or in the future.',
         ];
     }
 }
