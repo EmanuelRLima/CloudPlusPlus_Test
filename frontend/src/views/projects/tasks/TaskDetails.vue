@@ -22,7 +22,7 @@
         </div>
 
         <div class="space-y-8">
-          <TaskInfoSidebar :task="task" />
+          <TasksDetailsInfoSidebar :task="task" />
 
           <QuickActions
             v-if="isProjectOwner(authStore, projectsStore.currentProject)"
@@ -79,7 +79,7 @@ import TaskLoadingSkeleton from '@/components/common/LoadingSkeleton.vue'
 import TaskHeader from '@/components/tasks/tasksDetails/TasksDetailsHeader.vue'
 import TaskDetails from '@/components/tasks/tasksDetails/TasksDetails.vue'
 import ProjectInformation from '@/components/tasks/tasksDetails/TasksDetailsProjectInformation.vue'
-import TaskInfoSidebar from '@/components/tasks/tasksDetails/TasksDetailsInfoSidebar.vue'
+import TasksDetailsInfoSidebar from '@/components/tasks/tasksDetails/TasksDetailsInfoSideBar.vue'
 import QuickActions from '@/components/tasks/tasksDetails/TasksDetailsQuickActions.vue'
 import RelatedTasks from '@/components/tasks/tasksDetails/TasksDetailsRelatedTasks.vue'
 import TaskNotFound from '@/components/tasks/tasksDetails/TasksDetailsNotFound.vue'
