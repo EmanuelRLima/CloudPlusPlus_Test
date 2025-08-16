@@ -267,12 +267,27 @@
                         "application/json": {
                             "schema": {
                                 "required": [
-                                    "search"
+                                    "search",
+                                    "status",
+                                    "sort_by",
+                                    "sort_direction"
                                 ],
                                 "properties": {
                                     "search": {
                                         "type": "string",
                                         "example": "Teste"
+                                    },
+                                    "status": {
+                                        "type": "string",
+                                        "example": "active"
+                                    },
+                                    "sort_by": {
+                                        "type": "string",
+                                        "example": "value"
+                                    },
+                                    "sort_direction": {
+                                        "type": "string",
+                                        "example": "asc"
                                     }
                                 },
                                 "type": "object"
@@ -300,7 +315,7 @@
                                             "value": "20.00",
                                             "owner": {
                                                 "id": 1,
-                                                "name": "Admin User",
+                                                "username": "Admin User",
                                                 "email": "admin@example.com"
                                             },
                                             "tasks": []
@@ -341,7 +356,9 @@
                                         "path": "http://localhost/api/v1/projects",
                                         "per_page": 10,
                                         "to": 1,
-                                        "total": 1
+                                        "total": 1,
+                                        "total_active": 1,
+                                        "total_inactive": 4
                                         }
                                     }
                                 }
@@ -423,8 +440,7 @@
                                                 "id": 1,
                                                 "name": "Admin User",
                                                 "email": "admin@example.com"
-                                            },
-                                            "tasks": []
+                                            }
                                         }
                                     }
                                 }
@@ -564,7 +580,7 @@
                         "application/json": {
                             "schema": {
                                 "properties": {
-                                    "name": {
+                                    "title": {
                                         "type": "string",
                                         "example": "Teste Project"
                                     },
@@ -574,7 +590,11 @@
                                     },
                                     "status": {
                                         "type": "enum",
-                                        "example": "active"
+                                        "example": "pending"
+                                    },
+                                    "due_date": {
+                                        "type": "date",
+                                        "example": "2025-08-16 21:34:36.000"
                                     }
                                 },
                                 "type": "object"
@@ -594,14 +614,15 @@
                                         "type": "object",
                                         "example": {
                                             "id": 26,
-                                            "name": "Fazer teste",
+                                            "title": "Fazer teste",
                                             "description": "um teste",
-                                            "status": "active",
+                                            "status": "pending",
                                             "creator": {
                                                 "id": 1,
                                                 "name": "Admin User"
                                             },
                                             "project_id": 17,
+                                            "due_date": "2025-08-16 21:34:36.000",
                                             "created_at": "2025-08-14T22:24:48.000000Z",
                                             "updated_at": "2025-08-14T22:24:48.000000Z"
                                         }
@@ -641,14 +662,15 @@
                                         "type": "object",
                                         "example": {
                                            "id": 2,
-                                            "name": "Voluptatum molestiae non cupiditate.",
+                                            "title": "Voluptatum molestiae non cupiditate.",
                                             "description": "Incidunt culpa adipisci eos quia. Dolor et atque exercitationem quam est sit qui. Vel consequatur et qui. Iure recusandae nihil vitae modi et porro autem.",
-                                            "status": "active",
+                                            "status": "completed",
                                             "creator": {
                                                 "id": 1,
                                                 "name": "Admin User"
                                             },
                                             "project_id": 1,
+                                            "due_date": "2019-01-19",
                                             "created_at": "2025-08-14T21:34:36.000000Z",
                                             "updated_at": "2025-08-14T21:34:36.000000Z"
                                                 }
@@ -677,7 +699,7 @@
                         "application/json": {
                             "schema": {
                                 "properties": {
-                                    "name": {
+                                    "title": {
                                         "type": "string",
                                         "example": "Teste Project"
                                     },
@@ -687,7 +709,7 @@
                                     },
                                     "status": {
                                         "type": "enum",
-                                        "example": "active"
+                                        "example": "completed"
                                     },
                                     "project_id": {
                                         "type": "integer",
@@ -711,14 +733,15 @@
                                         "type": "object",
                                         "example": {
                                             "id": 26,
-                                            "name": "Fazer teste",
+                                            "title": "Fazer teste",
                                             "description": "um teste",
-                                            "status": "active",
+                                            "status": "completed",
                                             "creator": {
                                                 "id": 1,
                                                 "name": "Admin User"
                                             },
                                             "project_id": 17,
+                                            "due_date": "2019-01-19",
                                             "created_at": "2025-08-14T22:24:48.000000Z",
                                             "updated_at": "2025-08-14T22:24:48.000000Z"
                                         }
