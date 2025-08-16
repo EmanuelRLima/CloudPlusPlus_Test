@@ -2,7 +2,7 @@
 
 help:
 	@echo "Available commands:"
-	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-20s\033[0m %s\n", $$1, $$2}'
+	@grep -E '^[a-zA-Z_-]+:.?## .$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-20s\033[0m %s\n", $$1, $$2}'
 
 setup:
 	@echo "Setting up the project..."
@@ -167,6 +167,9 @@ quick-restart-backend:
 quick-restart-frontend:
 	docker-compose restart frontend
 
+permissions:
+	docker-compose exec backend chmod -R 777 storage bootstrap/cache
+
 install:
 	@echo "Starting complete installation..."
 	@make setup
@@ -176,5 +179,7 @@ install:
 	@sleep 15
 	@make key-generate
 	@make migrate
+	@make seed
+	@make permissions
 	@echo "Installation complete!"
-	@make health
+	@make health
