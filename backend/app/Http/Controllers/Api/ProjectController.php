@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ProjectRequest;
 use App\Http\Resources\ProjectResource;
+use App\Http\Requests\UpdatedProjectRequest;
 use App\Models\Project;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -20,8 +21,8 @@ class ProjectController extends Controller
         $request->validate([
             'search' => 'nullable|string|max:255',
             'status' => 'nullable|in:active,inactive',
-            'sort' => 'nullable|in:name,created_at,updated_at',
-            'direction' => 'nullable|in:asc,desc',
+            'sort_by' => 'nullable|in:name,start_date,end_date,value',
+            'sort_direction' => 'nullable|in:asc,desc',
             'page_size' => 'nullable|integer|min:1|max:100'
         ]);
 
@@ -33,14 +34,22 @@ class ProjectController extends Controller
         ->when($request->filled('status'), function ($query) use ($request) {
             return $query->where('status', $request->status);
         })
-        ->when($request->filled('sort'), function ($query) use ($request) {
-            $direction = $request->get('direction', 'asc');
-            return $query->orderBy($request->sort, $direction);
+        ->when($request->filled('sort_by'), function ($query) use ($request) {
+            $direction = $request->get('sort_direction', 'asc');
+            return $query->orderBy($request->sort_by, $direction);
         });
+
+        $totalActive = Project::where('status', 'active')->count();
+        $totalInactive = Project::where('status', 'inactive')->count();
 
         $pageSize = $request->get('page_size', 10);
 
-        return ProjectResource::collection($query->paginate($pageSize));
+        return ProjectResource::collection($query->paginate($pageSize))->additional([
+            'meta' => [
+                'total_active' => $totalActive,
+                'total_inactive' => $totalInactive,
+            ],
+        ]);
     }
 
     public function store(ProjectRequest $request)
@@ -64,7 +73,7 @@ class ProjectController extends Controller
         return new ProjectResource($project->load('owner', 'tasks'));
     }
 
-    public function update(ProjectRequest $request, Project $project)
+    public function update(UpdatedProjectRequest $request, Project $project)
     {
         $project->update($request->validated());
 
