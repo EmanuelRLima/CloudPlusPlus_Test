@@ -50,6 +50,9 @@
 import { computed } from 'vue'
 import { CalendarIcon, ClockIcon } from '@heroicons/vue/24/outline'
 import StatusBadge from '@/components/common/StatusBadge.vue'
+import { useFormatters } from '@/composables/useFormatters.js'
+
+const { formatDate } = useFormatters()
 
 const props = defineProps({
   task: {
@@ -83,11 +86,4 @@ function isTaskOverdue(dueDate) {
   return new Date(dueDate) < new Date()
 }
 
-function formatDate(date) {
-  return new Date(date).toLocaleDateString('en-US', {
-    month: 'short',
-    day: 'numeric',
-    year: 'numeric'
-  })
-}
 </script>

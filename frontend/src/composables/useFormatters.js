@@ -47,7 +47,42 @@ export function useFormatters() {
     return end < today
   }
 
+  function formatDateTime(dateString) {
+  return new Date(dateString).toLocaleDateString('en-US', {
+    month: 'short',
+    day: 'numeric',
+    year: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit'
+  })
+}
+
+  function getDaysUntilDue(dueDate) {
+  const today = new Date()
+  const due = new Date(dueDate)
+  const diffTime = due - today
+  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24))
+
+  if (diffDays < 0) {
+    return `${Math.abs(diffDays)} days overdue`
+  } else if (diffDays === 0) {
+    return 'Due today'
+  } else if (diffDays === 1) {
+    return 'Due tomorrow'
+  } else if (diffDays < 7) {
+    return `${diffDays} days remaining`
+  } else if (diffDays < 30) {
+    const weeks = Math.floor(diffDays / 7)
+    return `${weeks} week${weeks > 1 ? 's' : ''} remaining`
+  } else {
+    const months = Math.floor(diffDays / 30)
+    return `${months} month${months > 1 ? 's' : ''} remaining`
+  }
+}
+
   return {
+    formatDateTime,
+    getDaysUntilDue,
     formatCurrency,
     formatDate,
     calculateDuration,

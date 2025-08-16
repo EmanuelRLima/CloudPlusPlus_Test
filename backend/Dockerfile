@@ -93,6 +93,7 @@ sleep 10\n\
 if [ -f artisan ]; then\n\
     echo "Running Laravel setup..."\n\
     php artisan migrate --force || echo "Migration failed, continuing..."\n\
+    php artisan db:seed --force || echo "Seeding failed, continuing..."\n\
     php artisan config:cache || echo "Config cache failed, continuing..."\n\
 fi\n\
 \n\
