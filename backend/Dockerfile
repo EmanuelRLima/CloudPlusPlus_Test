@@ -38,8 +38,9 @@ WORKDIR /var/www/html
 
 COPY composer.json composer.lock* ./
 
+# Mudança aqui: instalar todas as dependências (incluindo dev) para evitar problemas
 RUN if [ -f composer.lock ]; then \
-        composer install --no-dev --no-scripts --no-autoloader --prefer-dist; \
+        composer install --no-scripts --no-autoloader --prefer-dist; \
     else \
         echo "No composer.lock found, skipping composer install"; \
     fi
@@ -74,6 +75,7 @@ COPY docker/supervisord.conf /etc/supervisord.conf
 
 FROM base as development
 
+# Esta linha garante que todas as dependências (incluindo dev) sejam instaladas
 RUN if [ -f composer.json ]; then \
         composer install --prefer-dist; \
     fi
@@ -107,6 +109,8 @@ FROM base as production
 
 COPY docker/php-prod.ini /usr/local/etc/php/conf.d/prod.ini
 
+# Em produção, usar apenas as dependências já instaladas no base
+# sem tentar reinstalar para evitar conflitos
 RUN rm -rf tests .env.example README.md
 
 EXPOSE 8000
