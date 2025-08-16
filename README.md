@@ -5,6 +5,8 @@
 - Docker (version 20.10+)
 - Docker Compose (version 2.0+)
 - Git
+- Php (version 8.4.x)
+- Node (version 22.x)
 
 ## Setup and Installation
 
