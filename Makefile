@@ -182,4 +182,4 @@ install:
 	@make seed
 	@make permissions
 	@echo "Installation complete!"
-	@make health
+	@make health
