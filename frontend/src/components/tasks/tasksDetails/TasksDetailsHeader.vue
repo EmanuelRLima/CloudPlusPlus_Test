@@ -39,6 +39,9 @@
 <script setup>
 import TaskHeaderActions from './TasksDetailsHeaderActions.vue'
 import { ArrowLeftIcon } from '@heroicons/vue/24/outline'
+import { useFormatters } from '@/composables/useFormatters.js'
+
+const { formatDate } = useFormatters()
 
 defineProps({
   task: {
@@ -57,11 +60,4 @@ defineProps({
 
 defineEmits(['toggle-status', 'delete-task'])
 
-function formatDate(date) {
-  return new Date(date).toLocaleDateString('en-US', {
-    month: 'short',
-    day: 'numeric',
-    year: 'numeric'
-  })
-}
 </script>

@@ -12,7 +12,9 @@
 
 <script setup>
 import { computed } from 'vue'
-import { formatDate, formatDateTime } from '@/components/utils/utils.js'
+import { useFormatters } from '@/composables/useFormatters.js'
+
+const { formatDate, formatDateTime } = useFormatters()
 
 const props = defineProps({
   label: {

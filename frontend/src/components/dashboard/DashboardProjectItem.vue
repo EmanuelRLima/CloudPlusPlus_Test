@@ -48,7 +48,10 @@
 
 <script setup>
 import { FolderIcon, ChevronRightIcon } from '@heroicons/vue/24/outline'
-import { formatCurrency, formatDate } from '@/components/utils/utils.js'
+import { useFormatters } from '@/composables/useFormatters.js'
+
+const { formatDate, formatCurrency } = useFormatters()
+
 defineProps({
   project: {
     type: Object,
