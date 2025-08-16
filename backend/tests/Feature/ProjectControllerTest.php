@@ -22,14 +22,13 @@ class ProjectControllerTest extends TestCase
         Sanctum::actingAs($user);
 
         $response = $this->getJson('/api/v1/projects');
-
         $response->assertStatus(200)
                  ->assertJsonStructure([
                      'data' => [
                          '*' => [
                              'id', 'name', 'description', 'status',
                              'start_date', 'end_date', 'value',
-                             'owner' => ['id', 'name', 'email']
+                             'owner' => ['id', 'username', 'email']
                          ]
                      ],
                      'links',
@@ -96,7 +95,7 @@ class ProjectControllerTest extends TestCase
 
         Sanctum::actingAs($user);
 
-        $response = $this->getJson('/api/v1/projects?sort=name&direction=asc');
+        $response = $this->getJson('/api/v1/projects?sort_by=name&sort_direction=asc');
 
         $response->assertStatus(200);
         $data = $response->json('data');
@@ -110,10 +109,10 @@ class ProjectControllerTest extends TestCase
         $user = User::factory()->create(['username' => 'testuser']);
         Sanctum::actingAs($user);
 
-        $response = $this->getJson('/api/v1/projects?status=invalid&sort=invalid&direction=invalid&page_size=101');
+        $response = $this->getJson('/api/v1/projects?status=invalid&sort_by=invalid&sort_direction=invalid&page_size=101');
 
         $response->assertStatus(422)
-                 ->assertJsonValidationErrors(['status', 'sort', 'direction', 'page_size']);
+                 ->assertJsonValidationErrors(['status', 'sort_by', 'sort_direction', 'page_size']);
     }
 
     #[Test]
@@ -138,7 +137,7 @@ class ProjectControllerTest extends TestCase
                      'data' => [
                          'id', 'name', 'description', 'status',
                          'start_date', 'end_date', 'value',
-                         'owner' => ['id', 'name', 'email']
+                         'owner' => ['id', 'username', 'email']
                      ]
                  ])
                  ->assertJson([
@@ -199,7 +198,7 @@ class ProjectControllerTest extends TestCase
                      'data' => [
                          'id', 'name', 'description', 'status',
                          'start_date', 'end_date', 'value',
-                         'owner' => ['id', 'name', 'email'],
+                         'owner' => ['id', 'username', 'email'],
                          'tasks'
                      ]
                  ])
@@ -248,8 +247,9 @@ class ProjectControllerTest extends TestCase
         $user = User::factory()->create(['username' => 'testuser']);
         $project = Project::factory()->create(['user_id' => $user->id]);
         $task = $project->tasks()->create([
-            'name' => 'Test Task',
-            'status' => 'active',
+            'title' => 'Test Task',
+            'status' => 'completed',
+            'due_date' => now()->addDays(7),
             'user_id' => $user->id
         ]);
 

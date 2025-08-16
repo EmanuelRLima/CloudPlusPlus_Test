@@ -23,9 +23,10 @@ class TaskControllerTest extends TestCase
         Sanctum::actingAs($user);
 
         $taskData = [
-            'name' => 'New Task',
+            'title' => 'New Task',
             'description' => 'Task description',
-            'status' => 'active'
+            'status' => 'pending',
+            'due_date' => now()->addDays(7)
         ];
 
         $response = $this->postJson("/api/v1/projects/{$project->id}/tasks", $taskData);
@@ -33,28 +34,28 @@ class TaskControllerTest extends TestCase
         $response->assertStatus(201)
                  ->assertJsonStructure([
                      'data' => [
-                         'id', 'name', 'description', 'status',
-                         'creator', 'project_id', 'created_at', 'updated_at'
+                         'id', 'title', 'description', 'status',
+                         'creator', 'project_id', 'due_date', 'created_at', 'updated_at'
                      ]
                  ])
                  ->assertJson([
                      'data' => [
-                         'name' => 'New Task',
+                         'title' => 'New Task',
                          'description' => 'Task description',
-                         'status' => 'active',
+                         'status' => 'pending',
                          'project_id' => $project->id
                      ]
                  ]);
 
         $this->assertDatabaseHas('tasks', [
-            'name' => 'New Task',
+            'title' => 'New Task',
             'project_id' => $project->id,
             'user_id' => $user->id
         ]);
     }
 
     #[Test]
-    public function it_creates_task_with_default_active_status(): void
+    public function it_creates_task_with_default_pending_status(): void
     {
         $user = User::factory()->create(['username' => 'testuser']);
         $project = Project::factory()->create(['user_id' => $user->id]);
@@ -62,15 +63,16 @@ class TaskControllerTest extends TestCase
         Sanctum::actingAs($user);
 
         $taskData = [
-            'name' => 'New Task',
-            'description' => 'Task description'
+            'title' => 'New Task',
+            'description' => 'Task description',
+            'due_date' => now()->addDays(7)
         ];
 
         $response = $this->postJson("/api/v1/projects/{$project->id}/tasks", $taskData);
 
         $response->assertStatus(201)
                  ->assertJson([
-                     'data' => ['status' => 'active']
+                     'data' => ['status' => 'pending']
                  ]);
     }
 
@@ -85,7 +87,7 @@ class TaskControllerTest extends TestCase
         $response = $this->postJson("/api/v1/projects/{$project->id}/tasks", []);
 
         $response->assertStatus(422)
-                 ->assertJsonValidationErrors(['name']);
+                 ->assertJsonValidationErrors(['title']);
     }
 
     #[Test]
@@ -115,7 +117,9 @@ class TaskControllerTest extends TestCase
         Sanctum::actingAs($unauthorizedUser);
 
         $response = $this->postJson("/api/v1/projects/{$project->id}/tasks", [
-            'name' => 'Unauthorized Task'
+            'title' => 'Unauthorized Task',
+            'description' => 'Task description',
+            'due_date' => now()->addDays(7)
         ]);
 
         $response->assertStatus(403);
@@ -128,7 +132,8 @@ class TaskControllerTest extends TestCase
         $project = Project::factory()->create(['user_id' => $user->id]);
         $task = Task::factory()->create([
             'project_id' => $project->id,
-            'user_id' => $user->id
+            'user_id' => $user->id,
+            'due_date' => now()->addDays(7)
         ]);
 
         Sanctum::actingAs($user);
@@ -138,16 +143,17 @@ class TaskControllerTest extends TestCase
         $response->assertStatus(200)
                  ->assertJsonStructure([
                      'data' => [
-                         'id', 'name', 'description', 'status',
-                         'creator' => ['id', 'name'],
-                         'project_id', 'created_at', 'updated_at'
+                         'id', 'title', 'description', 'status',
+                         'creator', 'project_id', 'due_date', 'created_at', 'updated_at'
                      ]
                  ])
                  ->assertJson([
                      'data' => [
-                         'id' => $task->id,
-                         'name' => $task->name,
-                         'project_id' => $project->id
+                        'id' => $task->id,
+                        'title' => $task->title,
+                        'description' => $task->description,
+                        'status' => $task->status,
+                        'project_id' => $project->id
                      ]
                  ]);
     }
@@ -165,7 +171,7 @@ class TaskControllerTest extends TestCase
         Sanctum::actingAs($user);
 
         $updateData = [
-            'name' => 'Updated Task Name',
+            'title' => 'Updated Task title',
             'description' => 'Updated description',
             'status' => 'inactive'
         ];
@@ -175,7 +181,7 @@ class TaskControllerTest extends TestCase
         $response->assertStatus(200)
                  ->assertJson([
                      'data' => [
-                         'name' => 'Updated Task Name',
+                         'title' => 'Updated Task title',
                          'description' => 'Updated description',
                          'status' => 'inactive'
                      ]
@@ -183,7 +189,7 @@ class TaskControllerTest extends TestCase
 
         $this->assertDatabaseHas('tasks', [
             'id' => $task->id,
-            'name' => 'Updated Task Name'
+            'title' => 'Updated Task title'
         ]);
     }
 
@@ -261,12 +267,12 @@ class TaskControllerTest extends TestCase
         Sanctum::actingAs($user);
 
         $response = $this->putJson("/api/v1/tasks/{$task->id}", [
-            'name' => '',
+            'title' => '',
             'status' => 'invalid_status'
         ]);
 
         $response->assertStatus(422)
-                 ->assertJsonValidationErrors(['name', 'status']);
+                 ->assertJsonValidationErrors(['title', 'status']);
     }
 
     #[Test]
