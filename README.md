@@ -7,6 +7,7 @@
 - Git
 - Php (version 8.4.x)
 - Node (version 22.x)
+- Make (optional, for convenience)
 
 ## Setup and Installation
 
@@ -104,7 +105,13 @@ Make sure the `nginx/default.conf` file exists with the reverse proxy configurat
 
 ## Running the Project
 
-### Development (Recommended)
+## If you have make installed
+
+```bash
+make install
+```
+
+### Development
 
 ```bash
 # Build and start all services
