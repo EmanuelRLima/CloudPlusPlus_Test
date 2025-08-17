@@ -167,8 +167,11 @@ quick-restart-backend:
 quick-restart-frontend:
 	docker-compose restart frontend
 
-permissions:
-	docker-compose exec backend chmod -R 777 storage bootstrap/cache
+permissions-bootstrap:
+	docker-compose exec backend chmod -R 777 bootstrap/cache
+
+permissions-storage:
+	docker-compose exec backend chmod -R 777 storage
 
 install:
 	@echo "Starting complete installation..."
@@ -180,6 +183,7 @@ install:
 	@make key-generate
 	@make migrate
 	@make seed
-	@make permissions
+	@make permissions-bootstrap
+	@make permissions-storage
 	@echo "Installation complete!"
 	@make health
