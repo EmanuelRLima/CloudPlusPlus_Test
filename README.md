@@ -5,7 +5,7 @@
 - Docker (version 20.10+)
 - Docker Compose (version 2.0+)
 - Git
-- Php (version 8.4.x)
+- Php (version 8.x.x)
 - Node (version 22.x)
 - Make (optional, for convenience)
 
@@ -14,96 +14,12 @@
 ### 1. Clone the repository
 
 ```bash
-git clone <https://github.com/EmanuelRLima/CloudPlusPlus_Test.git>
+git clone https://github.com/EmanuelRLima/CloudPlusPlus_Test.git
 cd CloudPlusPlus_Test
 ```
 
-### 2. Environment variables configuration
 
-#### Backend (Laravel)
-If there's no `.env` file in the `backend/` directory, one will be created automatically during build. You can customize the settings by editing the `.env` file:
-
-```bash
-# backend/.env (will be created automatically)
-APP_NAME=Laravel
-APP_ENV=local
-APP_KEY=base64:Pm9FW8JnsZDA5sHtGFv44EsdXDQH1Pz5WWnunGJ5UAg=
-APP_DEBUG=true
-APP_URL=http://localhost
-
-L5_SWAGGER_GENERATE_ALWAYS=true
-L5_SWAGGER_USE_ABSOLUTE_PATH=true
-
-APP_LOCALE=en
-APP_FALLBACK_LOCALE=en
-APP_FAKER_LOCALE=en_US
-
-APP_MAINTENANCE_DRIVER=file
-
-PHP_CLI_SERVER_WORKERS=4
-
-BCRYPT_ROUNDS=12
-
-LOG_CHANNEL=stack
-LOG_STACK=single
-LOG_DEPRECATIONS_CHANNEL=null
-LOG_LEVEL=debug
-
-DB_CONNECTION=pgsql
-DB_HOST=postgres
-DB_PORT=5432
-DB_DATABASE=hiring_test
-DB_USERNAME=postgres
-DB_PASSWORD=postgres
-
-SESSION_DRIVER=database
-SESSION_LIFETIME=120
-SESSION_ENCRYPT=false
-SESSION_PATH=/
-SESSION_DOMAIN=null
-
-BROADCAST_CONNECTION=log
-FILESYSTEM_DISK=local
-QUEUE_CONNECTION=database
-
-CACHE_STORE=database
-
-MEMCACHED_HOST=127.0.0.1
-
-REDIS_CLIENT=phpredis
-REDIS_HOST=redis
-REDIS_PASSWORD=null
-REDIS_PORT=6379
-
-MAIL_MAILER=log
-MAIL_SCHEME=null
-MAIL_HOST=127.0.0.1
-MAIL_PORT=2525
-MAIL_USERNAME=null
-MAIL_PASSWORD=null
-MAIL_FROM_ADDRESS="hello@example.com"
-MAIL_FROM_NAME="${APP_NAME}"
-
-AWS_ACCESS_KEY_ID=
-AWS_SECRET_ACCESS_KEY=
-AWS_DEFAULT_REGION=us-east-1
-AWS_BUCKET=
-AWS_USE_PATH_STYLE_ENDPOINT=false
-
-VITE_APP_NAME="${APP_NAME}"
-```
-
-#### Frontend
-Frontend environment variables are configured directly in `docker-compose.yml`:
-
-- `NODE_ENV=development`
-- `VITE_API_URL=http://localhost/api`
-
-### 3. Nginx Configuration
-
-Make sure the `nginx/default.conf` file exists with the reverse proxy configuration for backend and frontend.
-
-## Running the Project
+## 2. Running the Project
 
 ## If you have make installed
 
@@ -111,14 +27,32 @@ Make sure the `nginx/default.conf` file exists with the reverse proxy configurat
 make install
 ```
 
-### Development
+## If you don't have make installed
 
 ```bash
-# Build and start all services
-docker-compose up --build
+# Create env files to backend and frontend
+cp backend/.env.example backend/.env 2>/dev/null || true
+cp frontend/.env.example frontend/.env 2>/dev/null || true
 
-# Or run in background
+# Build containers
 docker-compose up --build -d
+
+# Activate containers
+docker-compose up -d
+
+# Generate Key
+docker-compose exec backend php artisan key:generate
+
+# Migrate tables backend
+docker-compose exec backend php artisan migrate
+
+# Seeds in database backend
+docker-compose exec backend php artisan db:seed
+
+# Permissions
+docker-compose exec backend chmod -R 777 bootstrap/cache
+
+docker-compose exec backend chmod -R 777 storage
 ```
 
 ### Service Verification
@@ -128,8 +62,6 @@ After initialization, check if all services are running:
 ```bash
 docker-compose ps -a
 ```
-
-All services should have "healthy" status after a few minutes.
 
 ## Accessing the Application
 
@@ -165,9 +97,8 @@ docker-compose exec backend php artisan tinker
 ### Laravel Commands (Backend)
 
 ```bash
-# Migrations
-docker-compose exec backend php artisan migrate
-docker-compose exec backend php artisan migrate:fresh --seed
+# Run tests
+docker-compose exec backend php artisan test
 
 # Cache
 docker-compose exec backend php artisan config:cache
@@ -181,9 +112,6 @@ docker-compose exec backend php artisan tinker
 ### VueJS Commands (Frontend)
 
 ```bash
-# Install dependencies
-docker-compose exec frontend npm install
-
 # Run tests
 docker-compose exec frontend npm test:ci
 
@@ -191,20 +119,7 @@ docker-compose exec frontend npm test:ci
 docker-compose exec frontend npm run build
 ```
 
-### Database
-
-```bash
-# Connect to PostgreSQL
-docker-compose exec postgres psql -U postgres -d hiring_test
-
-# Database backup
-docker-compose exec postgres pg_dump -U postgres hiring_test > backup.sql
-
-# Restore backup
-docker-compose exec -T postgres psql -U postgres -d hiring_test < backup.sql
-```
-
-## Troubleshooting
+## 3. Troubleshooting
 
 ### Issue: Services don't start
 
@@ -215,41 +130,12 @@ docker-compose exec -T postgres psql -U postgres -d hiring_test < backup.sql
 
 2. Rebuild containers:
    ```bash
-   docker-compose down
+   docker-compose down -v
    docker-compose build --no-cache
    docker-compose up
    ```
 
-### Issue: Database doesn't connect
-
-1. Check if PostgreSQL is healthy:
-   ```bash
-   docker-compose exec postgres pg_isready -U postgres
-   ```
-
-2. Check logs:
-   ```bash
-   docker-compose logs postgres
-   docker-compose logs backend
-   ```
-
-### Issue: Frontend can't access API
-
-1. Check if the `VITE_API_URL` variable is correct
-2. Check Nginx logs:
-   ```bash
-   docker-compose logs nginx
-   ```
-
-### Issue: Laravel permissions
-
-```bash
-# Fix permissions
-docker-compose exec backend chown -R www-data:www-data /var/www/html
-docker-compose exec backend chmod -R 755 storage bootstrap/cache
-```
-
-## Health Checks
+## 4. Health Checks
 
 The project includes health checks for all services:
 
@@ -258,18 +144,18 @@ The project includes health checks for all services:
 - **Backend**: `curl -f http://localhost:8000/api/health`
 - **Nginx**: `curl -f http://localhost/health`
 
-## User credentials example
+## 5. User credentials example
 
 - **User**
   - Email: demo@example.com
   - Username: Example_Example
   - Password: 123456789
 
-## API examples
+## 6. API examples
 
 - **Swagger**: http://localhost/api/documentation
 
-## Project structure
+## 7. Project structure
 
 ```bash
 ├── backend/
@@ -327,7 +213,7 @@ The project includes health checks for all services:
 └── README.md
 ```
 
-## Trade-offs
+## 8. Trade-offs
 
 1. Complexity vs Simplicity
 
@@ -348,7 +234,7 @@ The project includes health checks for all services:
   - Cost: Configuration drift risk
 
 
-## Next steps for production readiness
+## 9. Next steps for production readiness
 
  - Implementation of email notifications when a user registers
  - OTP model for authentication
@@ -358,7 +244,7 @@ The project includes health checks for all services:
  - Redis implementation for session caching
 
 
-## Contributing
+## 10. Contributing
 
 1. Fork the project
 2. Create your feature branch (`git checkout -b feature/xxxx`)
