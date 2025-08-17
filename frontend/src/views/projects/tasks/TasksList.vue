@@ -3,6 +3,7 @@
     <div class="space-y-8">
 
       <TasksHeader
+        v-if="!isProjectLoading"
         :project-id="projectId"
         :project-name="projectsStore.currentProject?.name || 'this project'"
         :is-owner="isProjectOwner(authStore, projectsStore.currentProject)"
@@ -18,6 +19,7 @@
       />
 
       <TasksList
+        v-if="!isProjectLoading"
         :tasks="tasksStore.tasks"
         :is-loading="tasksStore.isLoading"
         :has-filters="hasFilters"
@@ -87,9 +89,12 @@ const tasksStats = computed(() => ({
   inactive: tasksStore.inactiveTasks
 }))
 
+const isProjectLoading = ref(true)
+
 onMounted(async () => {
   await loadProject()
   await loadTasks(projectId.value)
+  isProjectLoading.value = false
 })
 
 async function loadProject() {

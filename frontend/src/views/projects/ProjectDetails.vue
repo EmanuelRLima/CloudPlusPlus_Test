@@ -6,7 +6,7 @@
       <ProjectHeader
         :project="project"
         :is-owner="canEdit"
-        @delete-project="confirmDelete"
+        @delete-project="confirmDelete(project)"
       />
 
       <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -43,6 +43,7 @@
       @close="showDeleteModal = false"
       @confirm="deleteProject"
     />
+
   </AppLayout>
 </template>
 
@@ -74,6 +75,7 @@ const projectsStore = useProjectsStore()
 const tasksStore = useTasksStore()
 
 const { showDeleteModal, isLoading, confirmDelete, deleteProject } = useProjectActions(projectsStore)
+
 const { toggleTaskStatus, loadTasks } = useTaskActions(tasksStore)
 const { calculateDaysRemaining } = useFormatters()
 

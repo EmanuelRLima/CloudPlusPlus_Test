@@ -21,10 +21,11 @@ export function useProjectActions(store) {
       const result = await store.deleteProject(projectToDelete.value.id)
       if (result.success) {
         toast.success('Project deleted successfully')
+        await store.fetchProjects(1)
         showDeleteModal.value = false
         projectToDelete.value = null
 
-        if (router.currentRoute.value.name === 'project-details') {
+        if (router.currentRoute.value.name === 'projects.show') {
           router.push('/projects')
         }
       } else {
