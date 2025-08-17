@@ -33,7 +33,7 @@
                     @update:photo="handlePhotoUpdate"
                     @update:preview="photoPreview = $event"
                   />
-                </div>
+                </div> TODO: photo upload
  -->
                 <div>
                   <label for="name" class="block text-sm font-medium text-gray-700">
@@ -469,7 +469,7 @@ async function updateProfile() {
   }
 
   try {
-    // const response = await api.post('/v1/profile/update', formData)
+    // const response = await api.post('/v1/profile/update', formData) TODO: implement API call
     toast.success('Profile updated successfully')
     // authStore.user = { ...authStore.user, ...form }
 
@@ -490,7 +490,7 @@ async function updatePassword() {
   }
 
   try {
-    // const response = await api.post('/v1/profile/password', passwordForm)
+    // const response = await api.post('/v1/profile/password', passwordForm) TODO: implement API call
     toast.success('Password updated successfully')
     resetPasswordForm()
 
