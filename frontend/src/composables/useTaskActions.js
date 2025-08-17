@@ -6,7 +6,7 @@ export function useTaskActions(tasksStore) {
     if (!result.success) {
       toast.error('Failed to update task status')
     } else {
-      const result = await tasksStore.fetchTasks(1)
+      const result = await tasksStore.fetchTasks(projectId, 1)
     if (!result.success) {
       toast.error('Failed to refresh tasks')
     }
@@ -14,7 +14,7 @@ export function useTaskActions(tasksStore) {
   }
 
   async function loadTasks(projectId) {
-    const result = await tasksStore.fetchTasks(projectId)
+    const result = await tasksStore.fetchTasks(projectId, 1)
     if (!result.success) {
       toast.error('Failed to load tasks')
     }

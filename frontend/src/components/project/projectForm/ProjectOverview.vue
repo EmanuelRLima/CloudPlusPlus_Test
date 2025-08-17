@@ -7,7 +7,7 @@
       <div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
         <div class="space-y-4">
           <ProjectOverviewItem label="Current Status">
-            <StatusBadge :status="project.status" />
+            <StatusBadge :status="project.status || 'inactive'" />
           </ProjectOverviewItem>
 
           <ProjectOverviewItem label="Created">

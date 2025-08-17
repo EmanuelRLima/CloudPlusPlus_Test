@@ -1,6 +1,10 @@
+<!-- StatusBadge.vue -->
 <template>
-  <span :class="classes">
+  <span v-if="safeStatus" :class="classes">
     {{ label }}
+  </span>
+  <span v-else class="inline-flex px-2 py-1 text-xs font-medium rounded-full bg-gray-100 text-gray-500">
+    No Status
   </span>
 </template>
 
@@ -10,7 +14,7 @@ import { computed } from 'vue'
 const props = defineProps({
   status: {
     type: String,
-    required: true
+    default: null
   },
   size: {
     type: String,
@@ -19,7 +23,14 @@ const props = defineProps({
   }
 })
 
+// Computed para status seguro
+const safeStatus = computed(() => {
+  return props.status && typeof props.status === 'string' && props.status.trim() !== ''
+})
+
 const classes = computed(() => {
+  if (!safeStatus.value) return ''
+
   const baseClasses = 'inline-flex font-medium rounded-full'
 
   const sizeClasses = {
@@ -42,6 +53,7 @@ const classes = computed(() => {
 })
 
 const label = computed(() => {
+  if (!safeStatus.value) return ''
   return props.status.charAt(0).toUpperCase() + props.status.slice(1)
 })
 </script>

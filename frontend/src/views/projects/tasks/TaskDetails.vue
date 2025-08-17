@@ -32,14 +32,6 @@
             @toggle-status="toggleTaskStatus"
           />
 
-          <RelatedTasks
-            v-if="relatedTasks.length > 0"
-            :tasks="relatedTasks"
-            :project-id="projectId"
-            :is-project-owner="isProjectOwner(authStore, projectsStore.currentProject)"
-            @navigate-to-task="navigateToTask"
-            @toggle-task-status="toggleRelatedTaskStatus"
-          />
         </div>
       </div>
     </div>
@@ -81,7 +73,6 @@ import TaskDetails from '@/components/tasks/tasksDetails/TasksDetails.vue'
 import ProjectInformation from '@/components/tasks/tasksDetails/TasksDetailsProjectInformation.vue'
 import TasksDetailsInfoSidebar from '@/components/tasks/tasksDetails/TasksDetailsInfoSideBar.vue'
 import QuickActions from '@/components/tasks/tasksDetails/TasksDetailsQuickActions.vue'
-import RelatedTasks from '@/components/tasks/tasksDetails/TasksDetailsRelatedTasks.vue'
 import TaskNotFound from '@/components/tasks/tasksDetails/TasksDetailsNotFound.vue'
 
 import { ExclamationTriangleIcon } from '@heroicons/vue/24/outline'
@@ -135,7 +126,7 @@ async function toggleTaskStatus() {
   if (!result.success) {
     toast.error('Failed to update task status')
   } else {
-    const result = await tasksStore.fetchTasks(1)
+    const result = await tasksStore.fetchTasks(projectId.value, 1)
     if (!result.success) {
       toast.error('Failed to refresh tasks')
     }
@@ -147,7 +138,7 @@ async function toggleRelatedTaskStatus(relatedTask) {
   if (!result.success) {
     toast.error('Failed to update task status')
   } else {
-    const result = await tasksStore.fetchTasks(1)
+    const result = await tasksStore.fetchTasks(projectId.value, 1)
     if (!result.success) {
       toast.error('Failed to refresh tasks')
     }
