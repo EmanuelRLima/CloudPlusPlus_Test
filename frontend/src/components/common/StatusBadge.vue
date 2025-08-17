@@ -1,4 +1,3 @@
-<!-- StatusBadge.vue -->
 <template>
   <span v-if="safeStatus" :class="classes">
     {{ label }}
@@ -23,7 +22,6 @@ const props = defineProps({
   }
 })
 
-// Computed para status seguro
 const safeStatus = computed(() => {
   return props.status && typeof props.status === 'string' && props.status.trim() !== ''
 })
